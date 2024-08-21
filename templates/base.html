@@ -1,0 +1,252 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>
+    Hostel Finder |{% block title %}
+
+    {% endblock %}
+  </title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta content="" name="keywords" />
+  <meta content="" name="description" />
+
+  <!-- Favicon -->
+  <link href="{% static 'img/favicon.ico' %}" rel="icon" />
+
+  <!-- Google Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap"
+    rel="stylesheet" />
+
+  <!-- Icon Font Stylesheet -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <!-- Libraries Stylesheet -->
+  <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet" />
+
+  <!-- Customized Bootstrap Stylesheet -->
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+
+  <!-- Template Stylesheet -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="container-xxl bg-white p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+      class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar Start -->
+    <div class="container-fluid nav-bar bg-transparent">
+      <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+        <a href="/" class="navbar-brand d-flex align-items-center text-center">
+          <div class="icon p-2 me-2">
+            <img class="img-fluid" src="{% static 'img/icon-deal.png' %}" alt="Icon"
+              style="width: 30px; height: 30px;" />
+          </div>
+          <h4 class="m-0 text-primary">Hostel Finder</h4>
+        </a>
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"><span
+            class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <div class="navbar-nav ms-auto">
+            <a href="/" class="nav-item nav-link active">Home</a>
+            <a href="/about" class="nav-item nav-link">About</a>
+            <a href="/all_hostels" class="nav-item nav-link">All Hostels</a>
+            <a href="/contact" class="nav-item nav-link">Contact</a>
+          </div>
+
+          <style>
+            .first-letter {
+              width: 45px;
+              /* Adjust the size of the circle */
+              height: 45px;
+              margin: auto;
+              /* Adjust the size of the circle */
+              background-color: grey;
+              /* Background color */
+              color: white;
+              /* Text color */
+              border-radius: 50%;
+              /* Makes the shape circular */
+              font-size: 20px;
+              text-transform: capitalize;
+              /* Adjust font size */
+              text-decoration: none;
+              text-align: center;
+              /* Remove underline */
+              font-weight: bold;
+              /* Optional: make the text bold */
+            }
+
+            .first-letter::after {
+              content: '' !important;
+            }
+
+            .first-letter:hover {
+              color: white;
+            }
+
+            .profile-pic-container {
+              width: 50px;
+              /* Adjust size as needed */
+              height: 50px;
+              /* Adjust size as needed */
+              border-radius: 50%;
+              /* Makes the container circular */
+              overflow: hidden;
+              /* Hides parts of the image outside the container */
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .profile-pic-container img {
+              width: 100%;
+              /* Makes the image cover the container */
+              height: auto;
+              /* Maintains aspect ratio */
+            }
+          </style>
+
+          {% if request.user.is_authenticated %}
+          <div class="nav-item dropdown">
+            {% if customer.profile_picture %}
+            <div class="profile-pic-container">
+              <img src="{{ customer.profile_picture.url }}" alt="Profile Picture" />
+            </div>
+            {% else %}
+            <a href="#" class="nav-link dropdown-toggle rounded-circle first-letter d-flex align-items-center"
+              data-bs-toggle="dropdown">{{ first_letter }}</a>
+            {% endif %}
+            <div class="dropdown-menu rounded-0 m-0">
+              <a href="/profile" class="dropdown-item">Your Profile</a>
+              {% if request.user.is_staff %}
+              <a href="/add_hostel" class="dropdown-item">Add Property</a>
+              <a href="/owner_dashboard" class="dropdown-item">Dashboard</a>
+              {% endif %}
+              <a href="/logout" class="dropdown-item">Logout</a>
+            </div>
+          </div>
+          {% else %}
+          <a href="#" class="btn btn-primary px-3 d-none d-lg-flex" data-bs-toggle="modal"
+            data-bs-target="#registerModal">Register</a>
+          <a style="margin-left: 10px;" href="/login" class="btn btn-primary px-3 d-none d-lg-flex">Login</a>
+          {% endif %}
+        </div>
+      </nav>
+    </div>
+    <!-- Navbar End -->
+
+    <!-- Modal (place outside of navbar) -->
+    <div style="z-index: 99999;" class="modal fade" id="registerModal" tabindex="-1"
+      aria-labelledby="registerModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="registerModalLabel">Choose Registration Type</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Please select one of the following options:</p>
+            <div class="d-grid gap-2">
+              <a href="/customer-register" class="btn btn-primary">Register as Customer</a>
+              <a href="/hostel-owner-register" class="btn btn-secondary">Register as Hostel Owner</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% block header %}
+
+    {% endblock %}
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+      {% block content %}
+      <!-- Page specific content will be inserted here -->
+      {% endblock %}
+    </div>
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+      <div class="container py-5">
+        <div class="row g-5">
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-white mb-4">Get In Touch</h5>
+            <p class="mb-2">
+              <i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA
+            </p>
+            <p class="mb-2">
+              <i class="fa fa-phone-alt me-3"></i>+012 345 67890
+            </p>
+            <p class="mb-2">
+              <i class="fa fa-envelope me-3"></i>info@example.com
+            </p>
+            <div class="d-flex pt-2">
+              <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-twitter"></i></a>
+              <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-facebook-f"></i></a>
+              <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-youtube"></i></a>
+              <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-white mb-4">Quick Links</h5>
+            <a class="btn btn-link" href="/">Home</a>
+            <a class="btn btn-link" href="/about">About Us</a>
+            <a class="btn btn-link" href="/contact">Contact Us</a>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-white mb-4">Popular Links</h5>
+            <a class="btn btn-link" href="/all_hostels">All Hostels</a>
+            <a class="btn btn-link" href="/terms_conditions">Terms & Conditions</a>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-white mb-4">Newsletter</h5>
+            <p>Subscribe to our newsletter for the latest updates and offers.</p>
+            <form action="">
+              <div class="input-group">
+                <input type="text" class="form-control border-light" placeholder="Your Email" />
+                <button class="btn btn-primary">Sign Up</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Footer End -->
+  </div>
+
+  <!-- Back to Top -->
+  <a href="#" class="btn btn-primary btn-lg back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/owl.carousel@2.3.4/dist/owl.carousel.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+  <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+  <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+  <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+  <!-- Template Javascript -->
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

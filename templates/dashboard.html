@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hostel Owner Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .sidebar {
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+
+    .sidebar .nav-link {
+      margin-bottom: 10px;
+    }
+
+    .content {
+      margin-left: 250px;
+      padding: 20px;
+    }
+
+    .card {
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sidebar">
+    <h4 class="text-center">Hostel Dashboard</h4>
+    <nav class="nav flex-column">
+      <a class="nav-link active" href="/">Home</a>
+      <a class="nav-link" href="#confirmBookings" data-bs-toggle="tab">Manage Bookings</a>
+      <a class="nav-link" href="#allBookings" data-bs-toggle="tab">All Bookings</a>
+      <a class="nav-link" href="#hostels" data-bs-toggle="tab">My Hostels</a>
+      <a class="nav-link" href="{% url 'user_logout' %}">Logout</a>
+    </nav>
+  </div>
+
+  <div class="content">
+    <div class="tab-content">
+      <!-- Manage Bookings Tab -->
+      <div class="tab-pane fade show active" id="confirmBookings">
+        <h2>Booking Requests</h2>
+        <div class="row">
+          {% for booking in bookings %}
+          <div class="col-md-4">
+            <div class="card">
+              <img src="{{ booking.room.hostel.cover_image.url }}" class="card-img-top" alt="Hostel Image" />
+              <div class="card-body">
+                <h5 class="card-title">Customer Details</h5>
+                <div class="row pb-3">
+                  <div class="col-md-6">
+                    <b>Name:</b> {{ booking.customer.user.username }}
+                  </div>
+                  <div class="col-md-6">
+                    <b>Phone#:</b> {{ booking.customer.phone_number }}
+                  </div>
+                  <div class="col-md-12">
+                    <b>Email#:</b> {{ booking.customer.user.email }}
+                  </div>
+                </div>
+                <h5 class="card-title">Room Details</h5>
+                <p class="card-text">
+                  <strong>Room:</strong> {{ booking.room.room_type }}<br />
+                  <strong>Hostel:</strong> {{ booking.room.hostel.name }}<br />
+                  <strong>Check-in:</strong> {{ booking.check_in }}<br />
+                  <strong>Check-out:</strong> {{ booking.check_out }}<br />
+                  <strong>Total Price:</strong> ${{ booking.total_price }}
+                </p>
+                <form method="post" action="{% url 'confirm_booking' booking.id %}">
+                  {% csrf_token %}
+                  <div class="d-flex justify-content-between">
+                    <button type="submit" name="confirmed" value="true" class="btn btn-success">Confirm</button>
+                    <button type="submit" name="confirmed" value="false" class="btn btn-danger">Reject</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="col-md-12">
+            <div class="alert alert-info" role="alert">No booking requests at the moment.</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- All Bookings Tab -->
+      <div class="tab-pane fade" id="allBookings">
+        <h2>All Bookings</h2>
+        <div class="row">
+          {% for booking in all_bookings %}
+          <div class="col-md-4">
+            <div class="card">
+              <img src="{{ booking.room.hostel.cover_image.url }}" class="card-img-top" alt="Hostel Image" />
+              <div class="card-body">
+                <div class="badge mb-2">
+                  {% if booking.expired %}
+                  <span class="badge bg-danger" style="font-size: 13px;">Expired</span>
+                  {% else %}
+                  <span class="badge bg-success" style="font-size: 13px;">Active</span>
+                  {% endif %}
+                </div>
+                <h5 class="card-title">Customer Details</h5>
+                <div class="row pb-3">
+                  <div class="col-md-6">
+                    <b>Name:</b> {{ booking.customer.user.username }}
+                  </div>
+                  <div class="col-md-6">
+                    <b>Phone#:</b> {{ booking.customer.phone_number }}
+                  </div>
+                  <div class="col-md-12">
+                    <b>Email#:</b> {{ booking.customer.user.email }}
+                  </div>
+                </div>
+                <h5 class="card-title">Room Details</h5>
+                <p class="card-text">
+                  <strong>Room:</strong> {{ booking.room.room_type }}<br />
+                  <strong>Hostel:</strong> {{ booking.room.hostel.name }}<br />
+                  <strong>Check-in:</strong> {{ booking.check_in }}<br />
+                  <strong>Check-out:</strong> {{ booking.check_out }}<br />
+                  <strong>Total Price:</strong> ${{ booking.total_price }}
+                </p>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="col-md-12">
+            <div class="alert alert-info" role="alert">No bookings available.</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- My Hostels Tab -->
+      <div class="tab-pane fade" id="hostels">
+        <h2>My Hostels</h2>
+        <div class="row">
+          {% for hostel in hostels %}
+          <div class="col-md-4">
+            <div class="card">
+              <img src="{{ hostel.cover_image.url }}" class="card-img-top" alt="Hostel Image" />
+              <div class="card-body">
+                <h5 class="card-title">{{ hostel.name }}</h5>
+                <p class="card-text">
+                  <strong>Address:</strong> {{ hostel.address }}<br />
+                  <strong>Area:</strong> {{ hostel.area }}<br />
+                  <strong>Description:</strong> {{ hostel.description }}
+                </p>
+                <a href="{% url 'hostel_detail' hostel.id %}" class="btn btn-primary">View Details</a>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="col-md-12">
+            <div class="alert alert-info" role="alert">No hostels found.</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

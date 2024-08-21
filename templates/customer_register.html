@@ -1,0 +1,357 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Register Form</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
+    <style>
+      body {
+        background: linear-gradient(to bottom right, white, #b9b9b9);
+        background-size: cover;
+        height: 105vh;
+      }
+      
+      a {
+        color: #ca1515;
+        font-size: 14px;
+      }
+      
+      a:hover {
+        color: #ca1515;
+        font-size: 14px;
+      }
+      
+      .register-container {
+        margin-top: 2%;
+        margin-bottom: 2%;
+        padding: 30px;
+        border-radius: 15px;
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      .form-control:focus {
+        border-color: #495057;
+        box-shadow: none;
+      }
+      
+      .btn-custom {
+        background-color: #495057;
+        color: #ffffff;
+      }
+      
+      .btn-custom:hover {
+        background-color: #343a40;
+        color: #ffffff;
+      }
+      
+      .input-group-text {
+        cursor: pointer;
+      }
+      
+      .logo {
+        display: block;
+        margin: 0 auto 10px;
+        max-width: 150px;
+      }
+      
+      .register-header {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      
+      .register-header h4 {
+        margin-bottom: 10px;
+      }
+      
+      .register-header hr {
+        border-top: 2px solid #ca1515;
+        width: 10%;
+        margin: 7px auto;
+      }
+      
+      .remember-forgot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-5 register-container">
+          <div class="register-header">
+            <a href="/"><img class="mb-3" style="width: 45%;" src="{% static 'img/dresshive_logo.png' %}" alt="" /></a>
+            <h4>Register</h4>
+            <hr />
+          </div>
+          <form id="register-form" action="/customer-register" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input name="cr_firstName" type="text" class="form-control" id="firstName" placeholder="Enter First Name" />
+              <span id="firstname_error" class="invalid-feedback" style="display: block !important;"></span>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input name="cr_lastName" type="text" class="form-control" id="lastName" placeholder="Enter Last Name" />
+              <span id="lastname_error" class="invalid-feedback" style="display: block !important;"></span>
+            </div>
+            <div class="form-group">
+              <label for="userName">Username</label>
+              <input name="cr_userName" type="text" class="form-control" id="userName" placeholder="Enter Username" />
+              <span id="username_error" class="invalid-feedback" style="display: block !important;"></span>
+            </div>
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input name="cr_email" type="email" class="form-control" id="email" placeholder="Enter email" />
+              <span id="email_error" class="invalid-feedback" style="display: block !important;"></span>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input name="cr_phone" type="text" class="form-control" id="phone" placeholder="Enter Phone" />
+              <span id="phone_error" class="invalid-feedback" style="display: block !important;"></span>
+            </div>
+            <div class="form-group">
+              <label for="address">Address</label>
+              <input name="cr_address" type="text" class="form-control" id="address" placeholder="Enter Address" />
+              <span id="address_error" class="invalid-feedback" style="display: block !important;"></span>
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <div class="input-group" style="position: relative;">
+                <input name="cr_password" type="password" class="form-control" id="password" placeholder="Enter Password" />
+                <span style="position: absolute; right: 10px; top: 6px; cursor: pointer;" class="" id="toggle-password"><i class="fa fa-eye" id="toggle-password-icon"></i></span>
+
+                <span id="password_error" class="invalid-feedback" style="display: block !important;"></span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <div class="input-group" style="position: relative;">
+                <input type="password" class="form-control" id="confirmPassword" name="cr_confirmPassword" placeholder="Confirm Password" required />
+                <span style="position: absolute; right: 10px; top: 6px; cursor: pointer;" class="" id="toggle-confirm-password"><i class="fa fa-eye" id="toggle-confirm-password-icon"></i></span>
+              </div>
+              <div id="passwordMismatch" class="invalid-feedback" style="display: none;">Passwords do not match.</div>
+            </div>
+            <button type="submit" class="btn btn-custom btn-block" id="registerButton">Register</button>
+          </form>
+          <p class="text-center mt-3">
+            Already have an account? <a href="/login">Login here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      document.getElementById('register-form').addEventListener('submit', function (event) {
+        event.preventDefault()
+      
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Registration successful! Welcome to Hostel Finder.',
+          confirmButtonText: 'OK'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            document.getElementById('register-form').submit()
+          }
+        })
+      })
+    </script>
+
+    <script>
+      $(document).ready(function () {
+        $('#toggle-password').click(function () {
+          const passwordField = $('#password')
+          const passwordFieldType = passwordField.attr('type')
+          const passwordIcon = $('#toggle-password-icon')
+      
+          if (passwordFieldType === 'password') {
+            passwordField.attr('type', 'text')
+            passwordIcon.removeClass('fa-eye').addClass('fa-eye-slash')
+          } else {
+            passwordField.attr('type', 'password')
+            passwordIcon.removeClass('fa-eye-slash').addClass('fa-eye')
+          }
+        })
+      
+        $('#toggle-confirm-password').click(function () {
+          const confirmPasswordField = $('#confirmPassword')
+          const confirmPasswordFieldType = confirmPasswordField.attr('type')
+          const confirmPasswordIcon = $('#toggle-confirm-password-icon')
+      
+          if (confirmPasswordFieldType === 'password') {
+            confirmPasswordField.attr('type', 'text')
+            confirmPasswordIcon.removeClass('fa-eye').addClass('fa-eye-slash')
+          } else {
+            confirmPasswordField.attr('type', 'password')
+            confirmPasswordIcon.removeClass('fa-eye-slash').addClass('fa-eye')
+          }
+        })
+      
+        function checkPasswordMatch() {
+          const password = $('#password').val()
+          const confirmPassword = $('#confirmPassword').val()
+      
+          if (password === confirmPassword) {
+            $('#passwordMismatch').hide()
+            $('#registerButton').prop('disabled', false)
+          } else {
+            $('#passwordMismatch').show()
+            $('#registerButton').prop('disabled', true)
+          }
+        }
+      
+        $('#password, #confirmPassword').on('input', checkPasswordMatch)
+      
+        $('#firstName').keyup(function () {
+          var firstName = $(this).val()
+          console.log(firstName)
+          if (firstName.trim() === '') {
+            $('#firstname_error').text('First Name cannot be empty')
+            $('#registerButton').prop('disabled', true)
+            return // Don't make AJAX request if email is empty
+          } else {
+            $('#firstname_error').text('')
+            $('#registerButton').prop('disabled', false)
+          }
+        })
+      
+        $('#lastName').keyup(function () {
+          var lastName = $(this).val()
+          console.log(lastName)
+          if (lastName.trim() === '') {
+            $('#lastname_error').text('Last Name cannot be empty')
+            $('#registerButton').prop('disabled', true)
+            return // Don't make AJAX request if email is empty
+          } else {
+            $('#lastname_error').text('')
+            $('#registerButton').prop('disabled', false)
+          }
+        })
+      
+        $('#phone').keyup(function () {
+          var phone = $(this).val()
+          if (phone.trim() === '') {
+            $('#phone_error').text('Phone Number cannot be empty')
+            $('#registerButton').prop('disabled', true)
+            return // Don't make AJAX request if email is empty
+          } else {
+            $('#phone_error').text('')
+            $('#registerButton').prop('disabled', false)
+          }
+        })
+      
+        $('#address').keyup(function () {
+          var address = $(this).val()
+          if (address.trim() === '') {
+            $('#address_error').text('Address cannot be empty')
+            $('#registerButton').prop('disabled', true)
+            return // Don't make AJAX request if email is empty
+          } else {
+            $('#address_error').text('')
+            $('#registerButton').prop('disabled', false)
+          }
+        })
+      
+        $('#password').keyup(function () {
+          var password = $(this).val()
+          console.log(password)
+          if (password.trim() === '') {
+            $('#password_error').text('Password cannot be empty')
+            $('#registerButton').prop('disabled', true)
+            return // Don't make AJAX request if email is empty
+          } else {
+            $('#password_error').text('')
+            $('#registerButton').prop('disabled', false)
+          }
+        })
+      
+        $('#confirmPassword').keyup(function () {
+          var confirmPassword = $(this).val()
+          console.log(confirmPassword)
+          if (confirmPassword.trim() === '') {
+            $('#confirm_password_error').text('confirm Password cannot be empty')
+            $('#registerButton').prop('disabled', true)
+            return // Don't make AJAX request if email is empty
+          } else {
+            $('#confirm_password_error').text('')
+            $('#registerButton').prop('disabled', false)
+          }
+        })
+      
+        $('#email').keyup(function () {
+          var email = $(this).val()
+          console.log(email)
+          if (email.trim() === '') {
+            $('#email_error').text('Email cannot be empty')
+            $('#registerButton').prop('disabled', true)
+            return // Don't make AJAX request if email is empty
+          }
+          fetch('{% url "check_availability" %}?email=' + encodeURIComponent(email))
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.email_exists) {
+                $('#email_error').text('Email already exists')
+                $('#registerButton').prop('disabled', true)
+              } else {
+                $('#email_error').text('')
+                $('#registerButton').prop('disabled', false)
+              }
+            })
+            .catch((error) => console.error('Error:', error))
+        })
+      
+        $('#userName').keyup(function () {
+          var username = $(this).val()
+          if (username.trim() === '') {
+            $('#username_error').text('Username cannot be empty')
+            $('#registerButton').prop('disabled', true)
+          }
+          fetch('{% url "check_availability" %}?username=' + encodeURIComponent(username))
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.username_exists) {
+                $('#username_error').text('Username already exists')
+                $('#registerButton').prop('disabled', true)
+              } else {
+                $('#username_error').text('')
+                $('#registerButton').prop('disabled', false)
+              }
+            })
+            .catch((error) => console.error('Error:', error))
+        })
+      })
+    </script>
+
+    <script>
+      $(document).ready(function () {
+        $('#registeremail').on('input', function () {
+          var email = $(this).val()
+          console.log('Email:', email)
+        })
+      
+        $('#registeruserName').on('input', function () {
+          var username = $(this).val()
+          console.log('Username:', username)
+        })
+      })
+    </script>
+  </body>
+</html>

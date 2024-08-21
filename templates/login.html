@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Login Form</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
+    <style>
+      body {
+        background: linear-gradient(to top right, white, #dbdbdb);
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      a {
+        color: #ca1515;
+        font-size: 14px;
+      }
+      a:hover {
+        color: #ca1515;
+        font-size: 14px;
+      }
+      .login-container {
+        margin-top: 2%;
+        padding: 30px;
+        border-radius: 15px;
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .form-control:focus {
+        border-color: #495057;
+        box-shadow: none;
+      }
+      .btn-custom {
+        background-color: #495057;
+        color: #ffffff;
+      }
+      .btn-custom:hover {
+        background-color: #343a40;
+        color: #ffffff;
+      }
+      .input-group-text {
+        cursor: pointer;
+      }
+      .logo {
+        display: block;
+        margin: 0 auto 10px;
+        max-width: 150px;
+      }
+      .login-header {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      .login-header h3 {
+        margin-bottom: 10px;
+      }
+      .login-header hr {
+        border-top: 2px solid #ca1515;
+        width: 10%;
+        margin: 7px auto;
+      }
+      .remember-forgot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      @keyframes slideDown {
+        0% {
+          transform: translateY(-100%);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+      @keyframes slideUp {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(100%);
+        }
+      }
+      .slide-down {
+        animation: slideDown 0.5s ease forwards;
+      }
+      .slide-up {
+        animation: slideUp 0.5s ease forwards;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-5 login-container">
+          <div class="login-header">
+            <a href="/"><img class="mb-3" style="width: 45%;" src="{% static 'img/dresshive_logo.png' %}" alt="" /></a>
+            <h4>Login</h4>
+            <hr />
+          </div>
+
+          {% if error_message %}
+            <div id="error-alert" class="alert alert-danger slide-down" role="alert">{{ error_message }}</div>
+          {% endif %}
+
+          <form action="/login" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input name="loginuserName" type="text" class="form-control" id="username" placeholder="Enter Username" />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <div class="input-group" style="position: relative;">
+                <input name="loginpassword" type="password" class="form-control" id="password" placeholder="Enter Password" />
+                <span style="position: absolute; right: 10px; top: 6px; cursor: pointer;" class="" id="toggle-password"><i class="fa fa-eye" id="toggle-password-icon"></i></span>
+              </div>
+            </div>
+            <div class="form-group remember-forgot">
+              <a style="text-align: right; width: 100%;" href="#">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn btn-custom btn-block">Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+      $(document).ready(function () {
+        $('#toggle-password').click(function () {
+          const passwordField = $('#password')
+          const passwordFieldType = passwordField.attr('type')
+          const passwordIcon = $('#toggle-password-icon')
+      
+          if (passwordFieldType === 'password') {
+            passwordField.attr('type', 'text')
+            passwordIcon.removeClass('fa-eye').addClass('fa-eye-slash')
+          } else {
+            passwordField.attr('type', 'password')
+            passwordIcon.removeClass('fa-eye-slash').addClass('fa-eye')
+          }
+        })
+      
+        setTimeout(function () {
+          $('#error-alert').removeClass('slide-down')
+          $('#error-alert').addClass('slide-up')
+          $('#error-alert').fadeOut()
+        }, 2000) // 5000 milliseconds = 5 seconds
+      })
+    </script>
+  </body>
+</html>

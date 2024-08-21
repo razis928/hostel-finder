@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  - Details
+{% endblock %}
+
+{% block header %}
+  <!-- Header Start -->
+  <div class="container-fluid header bg-white p-0">
+    <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
+      <div class="col-md-6 p-5 mt-lg-5">
+        {{ hostel.name }}
+        <nav aria-label="breadcrumb animated fadeIn">
+          <ol class="breadcrumb text-uppercase">
+            <li class="breadcrumb-item">
+              <a href="/">Home</a>
+            </li>
+            <li class="breadcrumb-item text-body active" aria-current="page">{{ hostel.name }}</li>
+          </ol>
+        </nav>
+      </div>
+      <div class="col-md-6 animated fadeIn">
+        <img class="img-fluid" src="{% static 'img/header.jpg' %}" alt="" />
+      </div>
+    </div>
+  </div>
+  <!-- Header End -->
+{% endblock %}
+
+{% block content %}
+  <style>
+    .cover-image-container {
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+    
+    .cover-image-container img {
+      width: 100%;
+      height: auto;
+      border-radius: 15px;
+      transition: all 0.3s ease-in-out;
+    }
+    
+    .cover-image-container img:hover {
+      transform: scale(1.05);
+    }
+    
+    .thumbnail img {
+      border: 3px solid transparent;
+      transition: border-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+      cursor: pointer;
+      border-radius: 15px;
+    }
+    
+    .thumbnail img:hover {
+      border-color: #0d6efd;
+      transform: scale(1.1);
+    }
+    
+    .description,
+    .details {
+      background-color: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .list-group-item {
+      border: none;
+      background-color: transparent;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+
+  <div class="container mt-5">
+    <!-- Hostel Name -->
+    <h1 class="text-center mb-4">{{ hostel.name }}</h1>
+
+    <!-- Cover Image -->
+    {% if hostel.cover_image %}
+      <div class="cover-image-container">
+        <img id="coverImage" src="{{ hostel.cover_image.url }}" class="img-fluid" alt="{{ hostel.name }}" />
+      </div>
+    {% endif %}
+
+    <!-- Thumbnails -->
+    <div class="row mt-4 text-center">
+      {% if hostel.image_1 %}
+        <div class="col-4 thumbnail">
+          <img id="thumbnail1" src="{{ hostel.image_1.url }}" class="img-fluid" alt="{{ hostel.name }}" onclick="changeCoverImage('{{ hostel.image_1.url }}', 'thumbnail1')" />
+        </div>
+      {% endif %}
+      {% if hostel.image_2 %}
+        <div class="col-4 thumbnail">
+          <img id="thumbnail2" src="{{ hostel.image_2.url }}" class="img-fluid" alt="{{ hostel.name }}" onclick="changeCoverImage('{{ hostel.image_2.url }}', 'thumbnail2')" />
+        </div>
+      {% endif %}
+      {% if hostel.image_3 %}
+        <div class="col-4 thumbnail">
+          <img id="thumbnail3" src="{{ hostel.image_3.url }}" class="img-fluid" alt="{{ hostel.name }}" onclick="changeCoverImage('{{ hostel.image_3.url }}', 'thumbnail3')" />
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Hostel Description -->
+    <div class="description mt-5">
+      <h2>Description</h2>
+      <p>{{ hostel.description }}</p>
+    </div>
+
+    <!-- Hostel Address and Area -->
+    <div class="details mt-5">
+      <h2>Details</h2>
+      <ul class="list-group">
+        <li class="list-group-item">
+          <strong>Address:</strong> {{ hostel.address }}
+        </li>
+        {% if hostel.area %}
+          <li class="list-group-item">
+            <strong>Area:</strong> {{ hostel.area }}
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <div class="rooms mt-5">
+      <h2>Rooms</h2>
+      <div class="row">
+        {% for room in rooms %}
+          <div class="col-md-4">
+            <div class="card mb-4">
+              {% if room.room_image %}
+                <img src="{{ room.room_image.url }}" class="card-img-top" alt="{{ room.room_type }}" />
+              {% endif %}
+              <div class="card-body">
+                <h5 class="card-title">{{ room.room_type }}</h5>
+                <p class="card-text">{{ room.description }}</p>
+                <p>
+                  <strong>Capacity:</strong> {{ room.capacity }} people
+                </p>
+                <p>
+                  <strong>Price per night:</strong> ${{ room.price_per_night }}
+                </p>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingModal" data-room-id="{{ room.id }}" data-room-type="{{ room.room_type }}">Book Now</button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Modal -->
+  <div style="z-index: 99999;" class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bookingModalLabel">Book a Room</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="bookingForm">
+            <input type="hidden" name="room_id" id="room_id" />
+            <div class="mb-3">
+              <label for="check_in" class="form-label">Check-In Date</label>
+              <input type="date" class="form-control" id="check_in" name="check_in" required />
+            </div>
+            <div class="mb-3">
+              <label for="check_out" class="form-label">Check-Out Date</label>
+              <input type="date" class="form-control" id="check_out" name="check_out" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Confirm Booking</button>
+          </form>
+          <div id="bookingMessage" class="mt-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+
+  <script>
+    function changeCoverImage(imageUrl, thumbnailId) {
+      let coverImageElement = document.getElementById('coverImage')
+      let currentCoverImageUrl = coverImageElement.src
+    
+      coverImageElement.src = imageUrl
+    
+      document.getElementById(thumbnailId).src = currentCoverImageUrl
+    }
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      function getCookie(name) {
+        var cookieValue = null
+        if (document.cookie && document.cookie !== '') {
+          var cookies = document.cookie.split(';')
+          for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim()
+            // Check if this cookie string begins with the name we want
+            if (cookie.substring(0, name.length + 1) === name + '=') {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+              break
+            }
+          }
+        }
+        return cookieValue
+      }
+    
+      var csrftoken = getCookie('csrftoken')
+    
+      $('#bookingModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var roomId = button.data('room-id') // Extract info from data-* attributes
+        var roomType = button.data('room-type')
+        var modal = $(this)
+        modal.find('#room_id').val(roomId)
+        modal.find('.modal-title').text('Book ' + roomType)
+      })
+    
+      $('#bookingForm').on('submit', function (event) {
+        event.preventDefault()
+    
+        var formData = $(this).serialize()
+        $.ajax({
+          url: "{% url 'check_room_availability' %}",
+          method: 'POST',
+          headers: { 'X-CSRFToken': csrftoken },
+          data: formData,
+          success: function (response) {
+            if (response.is_available) {
+              $.ajax({
+                url: "{% url 'book_room' %}",
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrftoken },
+                data: formData,
+                success: function (response) {
+                  if (response.success) {
+                    $('#bookingMessage').html('<div class="alert alert-success">Booking confirmed! We will notify you by email when the hostel owner confirms your request.</div>')
+                    setTimeout(function () {
+                      location.reload() // Reload the page to update the availability status
+                    }, 2000)
+                  } else {
+                    $('#bookingMessage').html('<div class="alert alert-danger">Booking failed.</div>')
+                  }
+                }
+              })
+            } else {
+              $('#bookingMessage').html('<div class="alert alert-danger">Room is not available for the selected dates.</div>')
+            }
+          }
+        })
+      })
+    })
+  </script>
+{% endblock %}

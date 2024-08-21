@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  Add Hostel Room
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px; visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;" bis_skin_checked="1">
+      <h1 class="my-3 pt-5">Add Hostel Room</h1>
+      <p>If you haven't created any hostel then please create hostel first</p>
+    </div>
+
+    <form id="hostel-room-form" action="/hostel-room" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label for="room_type" class="form-label">Hostels</label>
+          <select class="form-select" id="room_type" name="room_hostel" required>
+            <option value="" selected disabled>Select Your Hostel Where you want to Enter Room</option>
+            {% for hostel in hostels %}
+              <option value="{{ hostel.id }}">{{ hostel.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="room_type" class="form-label">Room Type</label>
+          <select class="form-select" id="room_type" name="room_type" required>
+            <option value="" selected disabled>Select Room Type</option>
+            <option value="Single">Single</option>
+            <option value="Double">Double</option>
+            <option value="Dorm">Dorm</option>
+          </select>
+        </div>
+
+        <!-- Price Per Night -->
+        <div class="col-md-6 mb-3">
+          <label for="price_per_night" class="form-label">Price Per Night</label>
+          <input type="number" class="form-control" id="price_per_night" name="room_price_per_night" step="0.01" placeholder="Enter Price Per Night" required />
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Capacity -->
+        <div class="col-md-6 mb-3">
+          <label for="capacity" class="form-label">Capacity</label>
+          <input type="number" class="form-control" id="capacity" name="room_capacity" placeholder="Number of people the room can accommodate" required />
+        </div>
+
+        <!-- Availability -->
+        <div class="col-md-6 mb-3">
+          <label for="availability" class="form-label">Availability</label>
+          <select class="form-select" id="availability" name="room_availability">
+            <option value="True" selected>Available</option>
+            <option value="False">Not Available</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Description -->
+        <div class="col-md-12 mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" id="description" name="room_description" rows="5" placeholder="Enter Room Description"></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Room Image -->
+        <div class="col-md-12 mb-3">
+          <label for="room_image" class="form-label">Room Image</label>
+          <input class="form-control" type="file" id="room_image" name="room_image" />
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    document.getElementById('hostel-room-form').addEventListener('submit', function (event) {
+      event.preventDefault()
+    
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Your room has been added successfully to this hostel.',
+        confirmButtonText: 'OK'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('hostel-room-form').submit()
+        }
+      })
+    })
+  </script>
+{% endblock %}
