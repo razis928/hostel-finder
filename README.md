@@ -10,7 +10,7 @@
 #### Activate virtual environment in Linux
 ``source env/bin/activate``
 #### Activate virtual environment in Windows
-``.\env\Scripts\activate``
+``env\Scripts\activate``
 
 #### install Requirements
 ``pip install -r requirements.txt``
@@ -22,7 +22,7 @@
 ``python manage.py migrate``
 
 #### Create admin user
-``python manage.py creatsuperuser``
+``python manage.py createsuperuser``
 
 #### Create admin user
 ``python manage.py runserver``
@@ -30,3 +30,7 @@
 #### Goto Page  and login using previously create admin user
 ``http://127.0.0.1:8000/admin``
 ``http://127.0.0.1:8000/```
+
+
+``http://127.0.0.1:8000/``
+paste this on google chrome or any browser
